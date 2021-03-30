@@ -28,6 +28,10 @@ a.playlist-link {
   }
 }
 
+.icon {
+  fill: #fff
+}
+
 body {
   background-color: #1d1d1d;
   color: #fff;

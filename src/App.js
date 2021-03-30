@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Cookies, { set } from 'js-cookie'
+import Cookies from 'js-cookie'
 import { SpotifyAuth } from 'react-spotify-auth'
 import Div100vh from 'react-div-100vh'
 import moment from 'moment'
@@ -14,7 +14,7 @@ let Header = () => (
 
 let Heart = () => {
   return (
-    <div alt="heart icon" class="heart-icon"></div>
+    <div alt="heart icon" className="heart-icon"></div>
   )
 }
 
@@ -38,9 +38,10 @@ let Footer = () => {
 
 
 function App() {
-  const [token, setToken] = useState(Cookies.get('spotifyAuthToken'))
+  const [token, setToken] = useState(Cookies.get('spotifyAuthToken'));
   const [likedSongsTotal, setLikedSongsTotal] = useState(0);
-  const [playlistId, setPlaylistId] = useState('')
+  const [playlistId, setPlaylistId] = useState('');
+  const [loading, setLoading] = useState(false);
 
   let likedSongs = [];
   let endpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
@@ -66,7 +67,7 @@ function App() {
       .then(response => response.json())
       .then((result => {
         if (likedSongsTotal === 0 && result.total !== 0) {
-          setLikedSongsTotal(result.total)
+          setLikedSongsTotal(result.total);
         }
         likedSongs.push(result.items.map(a => a.track.uri));
         if (result.next !== null) {
@@ -147,6 +148,7 @@ function App() {
           offset = offset + 1;
           addSongs(playlistId)
         } else {
+          setLoading(false);
           setPlaylistId(playlistId);
         }
       }))
@@ -157,10 +159,29 @@ function App() {
     return (
       <>
         <h2>Done!</h2>
-        <a class="playlist-link" href={url}>{url}</a>
+        <a className="playlist-link" href={url}>{url}</a>
         <span style={{ fontSize: 'small', textAlign: 'center' }}>This playlist has been added to your account.</span>
       </>
     )
+  }
+
+  let PlaylistButton = () => {
+    if (loading) {
+      return (
+        <div data-icon="ei-spinner" data-size="m"></div>
+      )
+    }
+    else {
+      return (
+        <button
+          className="generatePlaylistButton"
+          title="Get Your Playlist"
+          disabled={loading}
+          onClick={() => { setLoading(true); fetchLikedSongs() }}>
+          Get Your Playlist
+        </button>
+      )
+    }
   }
 
   if (token) {
@@ -188,12 +209,7 @@ function App() {
             <Heart />
           </div>
           <div className="info">
-            <button
-              className="generatePlaylistButton"
-              title="Get Your Playlist"
-              onClick={() => fetchLikedSongs()}>
-              Get Your Playlist
-            </button>
+            <PlaylistButton />
           </div>
           <Footer />
         </div>
