@@ -141,3 +141,35 @@ iframe {
   display: none;
   padding: 10px;
 }
+
+input[type="url"] {
+  background: transparent;
+  font-family: unset;
+  font-size: unset;
+  color: white;
+  width: auto;
+  border: none;
+  border-bottom: 1px solid white;
+  margin: 0px 5px;
+  min-width: 170px;
+}
+
+input[type="url"]:focus {
+  outline: none
+}
+
+.overwritePlaylistButton {
+  outline: none;
+  background: transparent;
+  color: white;
+  border: none;
+}
+
+input[type="submit"]:hover {
+  cursor: pointer;
+}
+
+form {
+  font-size: small;
+  padding: 20px 0;
+}

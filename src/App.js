@@ -40,7 +40,7 @@ let Footer = () => {
 function App() {
   const [token, setToken] = useState(Cookies.get('spotifyAuthToken'));
   const [likedSongsTotal, setLikedSongsTotal] = useState(0);
-  const [playlistId, setPlaylistId] = useState('');
+  const [playlistID, setPlaylistID] = useState('');
   const [loading, setLoading] = useState(false);
 
   let likedSongs = [];
@@ -51,7 +51,7 @@ function App() {
     setToken(Cookies.get('spotifyAuthToken'))
   }, [])
 
-  let fetchLikedSongs = async () => {
+  let fetchLikedSongs = async (existingPlaylistID) => {
     fetch(endpoint, {
       method: 'GET',
       mode: 'cors',
@@ -72,14 +72,14 @@ function App() {
         likedSongs.push(result.items.map(a => a.track.uri));
         if (result.next !== null) {
           endpoint = result.next;
-          fetchLikedSongs();
+          fetchLikedSongs(existingPlaylistID);
         } else {
-          fetchUserId()
+          fetchUserID(existingPlaylistID)
         }
       }))
   }
 
-  let fetchUserId = async () => {
+  let fetchUserID = async (existingPlaylistID) => {
     fetch("https://api.spotify.com/v1/me", {
       method: 'GET',
       mode: 'cors',
@@ -94,12 +94,17 @@ function App() {
     })
       .then(response => response.json())
       .then((result => {
-        createPlaylist(result.id);
+        if (existingPlaylistID) {
+          clearPlaylist(existingPlaylistID);
+        }
+        else {
+          createPlaylist(result.id);
+        }
       }))
   }
 
-  let createPlaylist = (userId) => {
-    let url = new URL("https://api.spotify.com/v1/users/" + userId + "/playlists");
+  let createPlaylist = (userID) => {
+    let url = new URL("https://api.spotify.com/v1/users/" + userID + "/playlists");
     let date = moment().format('MMMM Do YYYY');
 
     fetch(url, {
@@ -126,8 +131,53 @@ function App() {
       }))
   };
 
-  let addSongs = async (playlistId) => {
-    fetch("https://api.spotify.com/v1/playlists/" + playlistId + "/tracks", {
+  let clearPlaylist = async (existingPlaylistID) => {
+    fetch("https://api.spotify.com/v1/playlists/" + existingPlaylistID + "/tracks", {
+      method: 'PUT',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify({
+        uris: [],
+      })
+    })
+      .then(response => response.json())
+      .then((() => {
+        updateDate(existingPlaylistID);
+      }))
+  }
+
+  let updateDate = async (existingPlaylistID) => {
+    let date = moment().format('MMMM Do YYYY');
+
+    fetch(`https://api.spotify.com/v1/playlists/${existingPlaylistID}`, {
+      method: 'PUT',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify({
+        description: `as of ${date}`,
+      })
+    })
+      .then((() => {
+        addSongs(existingPlaylistID);
+      }))
+  }
+
+  let addSongs = async (playlistID) => {
+    fetch("https://api.spotify.com/v1/playlists/" + playlistID + "/tracks", {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -146,16 +196,16 @@ function App() {
       .then((() => {
         if (((likedSongs.length - 1) > offset) && (offset < 200)) {
           offset = offset + 1;
-          addSongs(playlistId)
+          addSongs(playlistID)
         } else {
           setLoading(false);
-          setPlaylistId(playlistId);
+          setPlaylistID(playlistID);
         }
       }))
   }
 
   let PlaylistShareView = () => {
-    let url = `https://open.spotify.com/playlist/${playlistId}`
+    let url = `https://open.spotify.com/playlist/${playlistID}`
     return (
       <>
         <h2>Done!</h2>
@@ -168,7 +218,7 @@ function App() {
   let PlaylistButton = () => {
     if (loading) {
       return (
-        <div data-icon="ei-spinner" data-size="m"></div>
+        <span>Loading...</span>
       )
     }
     else {
@@ -184,8 +234,50 @@ function App() {
     }
   }
 
+  let OverwritePlaylistField = () => {
+    const [url, setUrl] = useState([]);
+
+    let handleSubmit = (event) => {
+      try {
+        event.preventDefault();
+        let IDregex = /[/](\d|\w)+([?]|$)/;
+        let playlistID = url.match(IDregex)[0].replace('/', '').replace('?', ''); // no sanity check we die like men
+        fetchLikedSongs(playlistID);
+      } catch (error) {
+        setLoading(false);
+      }
+    }
+    if (loading) {
+      return (
+        <></>
+      )
+    }
+    else {
+      return (
+        <form onSubmit={(event) => { setLoading(true); handleSubmit(event) }}>
+          <label>
+            <span>or overwrite an existing playlist:</span>
+            <input
+              type="url"
+              id="existingPlaylistUrl"
+              placeholder="paste the playlist URL here"
+              onChange={event => setUrl(event.target.value)}
+              value={url}
+              required={true} />
+          </label>
+          <button
+            type="submit"
+            className="overwritePlaylistButton"
+            title="Overwrite Playlist"
+            disabled={loading}>
+            →</button>
+        </form>
+      )
+    }
+  }
+
   if (token) {
-    if (playlistId !== '') {
+    if (playlistID !== '') {
       return (
         <Div100vh>
           <div className="container">
@@ -210,6 +302,7 @@ function App() {
           </div>
           <div className="info">
             <PlaylistButton />
+            <OverwritePlaylistField />
           </div>
           <Footer />
         </div>
