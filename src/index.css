@@ -1,4 +1,5 @@
 .heart-icon {
+  border-bottom: 20px solid transparent;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -151,7 +152,9 @@ input[type="url"] {
   border: none;
   border-bottom: 1px solid white;
   margin: 0px 5px;
-  min-width: 170px;
+  width: 170px;
+  -webkit-appearance:none;
+  border-radius: 0;
 }
 
 input[type="url"]:focus {
@@ -170,6 +173,23 @@ input[type="submit"]:hover {
 }
 
 form {
+  text-align: center;
   font-size: small;
   padding: 20px 0;
+}
+
+::-webkit-input-placeholder {
+  text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  text-align: center;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  text-align: center;  
+}
+
+:-ms-input-placeholder {  
+  text-align: center; 
 }
