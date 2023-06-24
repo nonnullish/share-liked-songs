@@ -92,7 +92,7 @@ iframe {
   margin: 70px;
 }
 
-.mainView {
+.main-view {
   display: flex;
   flex: 2 2 0;
   justify-content: center;
