@@ -24,6 +24,7 @@ a.playlist-link {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -87,7 +88,7 @@ footer a {
 
 iframe {
   height: 100%;
-  border: 0px!important;
+  border: 0px !important;
   border-radius: 10px;
   margin: 70px;
 }
@@ -115,7 +116,8 @@ iframe {
   background-color: #1db954;
 }
 
-.generatePlaylistButton, ._3xrlJ {
+.generatePlaylistButton,
+._3xrlJ {
   margin: 0 auto 0 auto;
   justify-content: center;
   display: block;
@@ -153,7 +155,7 @@ input[type="url"] {
   border-bottom: 1px solid white;
   margin: 0px 5px;
   width: 170px;
-  -webkit-appearance:none;
+  appearance: none;
   border-radius: 0;
 }
 
@@ -166,9 +168,6 @@ input[type="url"]:focus {
   background: transparent;
   color: white;
   border: none;
-}
-
-input[type="submit"]:hover {
   cursor: pointer;
 }
 
@@ -182,14 +181,16 @@ form {
   text-align: center;
 }
 
-:-moz-placeholder { /* Firefox 18- */
-  text-align: center;  
+:-moz-placeholder {
+  /* Firefox 18- */
+  text-align: center;
 }
 
-::-moz-placeholder {  /* Firefox 19+ */
-  text-align: center;  
+::-moz-placeholder {
+  /* Firefox 19+ */
+  text-align: center;
 }
 
-:-ms-input-placeholder {  
-  text-align: center; 
+:-ms-input-placeholder {
+  text-align: center;
 }

@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import Cookies from 'js-cookie'
-import { SpotifyAuth } from 'react-spotify-auth'
 import Div100vh from 'react-div-100vh'
+import { SpotifyAuth } from 'react-spotify-auth'
+import toast, { Toaster } from 'react-hot-toast';
+import Cookies from 'js-cookie'
 import dayjs from 'dayjs'
 
 import Header from './Header';
 import Heart from './Heart';
 import Footer from './Footer';
+import PlaylistShareView from './PlaylistShareView';
+import PlaylistButton from './PlaylistButton';
+import OverwritePlaylistField from './OverwritePlaylistField';
 
 const App = () => {
     const [token, setToken] = useState(Cookies.get('spotifyAuthToken'));
     const [likedSongsTotal, setLikedSongsTotal] = useState(0);
     const [playlistID, setPlaylistID] = useState('');
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     let likedSongs = [];
     let endpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
@@ -25,16 +30,17 @@ const App = () => {
     const fetchLikedSongs = async (existingPlaylistID) => {
         const response = await fetch(endpoint, {
             method: 'GET',
-            mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': `Bearer ${token}`
             },
-            redirect: 'follow',
             referrerPolicy: 'no-referrer',
         });
+
+        if (!response.ok) {
+            toast.error('There was en error. Please try again or contact the developer.');
+        }
 
         const result = await response.json();
 
@@ -43,6 +49,7 @@ const App = () => {
         }
 
         likedSongs.push(result.items.map(({ track }) => track.uri));
+        setProgress(likedSongs.flat().length);
 
         if (!!result.next) {
             endpoint = result.next;
@@ -54,36 +61,33 @@ const App = () => {
 
     const fetchUserID = async (existingPlaylistID) => {
         const response = await fetch("https://api.spotify.com/v1/me", {
-            method: 'GET',
-            mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': `Bearer ${token}`
             },
-            redirect: 'follow',
             referrerPolicy: 'no-referrer',
         });
+
+        if (!response.ok) {
+            toast.error('There was en error. Please try again or contact the developer.')
+        }
 
         const result = await response.json();
         existingPlaylistID ? await clearPlaylist(existingPlaylistID) : await createPlaylist(result.id);
     }
 
     const createPlaylist = async (userID) => {
-        const url = new URL("https://api.spotify.com/v1/users/" + userID + "/playlists");
-        const date = dayjs().format('MMMM Do YYYY');
+        const url = new URL(`https://api.spotify.com/v1/users/${userID}/playlists`);
+        const date = dayjs().format('MMMM D YYYY');
 
         const response = await fetch(url, {
             method: 'POST',
-            mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': `Bearer ${token}`
             },
-            redirect: 'follow',
             referrerPolicy: 'no-referrer',
             body: JSON.stringify({
                 name: 'Liked Songs',
@@ -93,74 +97,75 @@ const App = () => {
             })
         })
 
+        if (!response.ok) {
+            toast.error('There was en error. Please try again or contact the developer.')
+        }
+
         const result = await response.json();
         await addSongs(result.id);
     };
 
     const clearPlaylist = async (existingPlaylistID) => {
-        const response = await fetch("https://api.spotify.com/v1/playlists/" + existingPlaylistID + "/tracks", {
+        const response = await fetch(`https://api.spotify.com/v1/playlists/${existingPlaylistID}/tracks`, {
             method: 'PUT',
-            mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': `Bearer ${token}`
             },
-            redirect: 'follow',
             referrerPolicy: 'no-referrer',
             body: JSON.stringify({
                 uris: [],
             })
         });
 
-        // console.log(response.ok); // todo;
+        if (!response.ok) {
+            toast.error('There was en error. Please try again or contact the developer.')
+        }
 
         updateDate(existingPlaylistID);
     }
 
     const updateDate = async (existingPlaylistID) => {
-        const date = dayjs().format('MMMM Do YYYY');
+        const date = dayjs().format('MMMM D YYYY');
 
         const response = await fetch(`https://api.spotify.com/v1/playlists/${existingPlaylistID}`, {
             method: 'PUT',
-            mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': `Bearer ${token}`
             },
-            redirect: 'follow',
             referrerPolicy: 'no-referrer',
             body: JSON.stringify({
                 description: `as of ${date}`,
             })
         });
 
-        // console.log(response.ok); // todo
+        if (!response.ok) {
+            toast.error('There was en error. Please try again or contact the developer.')
+        }
 
         addSongs(existingPlaylistID);
     }
 
     const addSongs = async (playlistID) => {
-        const response = await fetch("https://api.spotify.com/v1/playlists/" + playlistID + "/tracks", {
+        const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
             method: 'POST',
-            mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             },
-            redirect: 'follow',
             referrerPolicy: 'no-referrer',
             body: JSON.stringify({
                 uris: likedSongs[offset],
             })
         });
 
-        // console.log(response.ok); // todo
+        if (!response.ok) {
+            toast.error('There was en error. Please try again or contact the developer.')
+        }
 
         if (((likedSongs.length - 1) > offset) && (offset < 200)) {
             offset = offset + 1;
@@ -171,122 +176,48 @@ const App = () => {
         }
     }
 
-    const PlaylistShareView = () => {
-        const url = `https://open.spotify.com/playlist/${playlistID}`
-        return (
-            <>
-                <h2>Done!</h2>
-                <a className="playlist-link" href={url}>{url}</a>
-                <span style={{ fontSize: 'small', textAlign: 'center' }}>This playlist has been added to your account.</span>
-            </>
-        )
-    }
-
-    const PlaylistButton = () => {
-        if (loading) {
-            return (
-                <span>Loading...</span>
-            )
-        }
-        else {
-            return (
-                <button
-                    className="generatePlaylistButton"
-                    title="Get Your Playlist"
-                    disabled={loading}
-                    onClick={() => { setLoading(true); fetchLikedSongs() }}
-                >
-                    Get Your Playlist
-                </button>
-            )
+    const handleSubmit = (event, url) => {
+        try {
+            event.preventDefault();
+            const IDregex = /[/](\d|\w)+([?]|$)/;
+            const playlistID = url.match(IDregex)[0].replace('/', '').replace('?', '');
+            fetchLikedSongs(playlistID);
+        } catch (error) {
+            console.log(error)
+            setLoading(false);
         }
     }
 
-    const OverwritePlaylistField = () => {
-        const [url, setUrl] = useState([]);
-
-        const handleSubmit = (event) => {
-            try {
-                event.preventDefault();
-                const IDregex = /[/](\d|\w)+([?]|$)/;
-                const playlistID = url.match(IDregex)[0].replace('/', '').replace('?', '');
-                fetchLikedSongs(playlistID);
-            } catch (error) {
-                setLoading(false);
-            }
-        }
-
-        if (loading) {
-            return null;
-        }
-
-        else {
-            return (
-                <form onSubmit={(event) => { setLoading(true); handleSubmit(event) }}>
-                    <label>
-                        <span>or overwrite an existing playlist:</span>
-                        <input
-                            type="url"
-                            id="existingPlaylistUrl"
-                            placeholder="paste the playlist URL here"
-                            onChange={event => setUrl(event.target.value)}
-                            value={url}
-                            required={true} />
-                    </label>
-                    <button
-                        type="submit"
-                        className="overwritePlaylistButton"
-                        title="Overwrite Playlist"
-                        disabled={loading}
-                    >
-                        →
-                    </button>
-                </form>
-            )
-        }
-    }
-
-    if (token) {
-        if (playlistID !== '') {
-            return (
-                <Div100vh>
-                    <div className="container">
-                        <Header />
-                        <Heart />
-                        <div className="info">
-                            <PlaylistShareView />
-                        </div>
-                        <Footer />
-                    </div>
-                </Div100vh>
-            )
-        }
-
-        return (
-            <Div100vh>
-                <div className="container">
-                    <Header />
-                    <Heart />
-                    <div className="info">
-                        <PlaylistButton />
-                        <OverwritePlaylistField />
-                    </div>
-                    <Footer />
-                </div>
-            </Div100vh>
-        )
-    } else return (
+    return (
         <Div100vh>
             <div className="container">
                 <Header />
                 <Heart />
                 <div className="info">
-                    <SpotifyAuth
-                        redirectUri='https://nonnullish.github.io/share-liked-songs'
-                        clientID='05bff6f3b4d4467494c8be1b7895403e'
-                        scopes={['playlist-modify-public', 'user-library-read']}
-                    />
+                    {!token &&
+                        <SpotifyAuth
+                            redirectUri='https://nonnullish.github.io/share-liked-songs'
+                            clientID='05bff6f3b4d4467494c8be1b7895403e'
+                            scopes={['playlist-modify-public', 'user-library-read']}
+                        />
+                    }
+                    {token && !playlistID &&
+                        <>
+                            <PlaylistButton
+                                loading={loading}
+                                progress={progress}
+                                total={likedSongsTotal}
+                                onClick={() => { setLoading(true); fetchLikedSongs() }}
+                            />
+                            <OverwritePlaylistField
+                                loading={loading}
+                                setLoading={setLoading}
+                                handleSubmit={handleSubmit} />
+                        </>
+                    }
+                    {token && !!playlistID && <PlaylistShareView playlistID={playlistID} />}
                 </div>
+                <Toaster position="top-right" toastOptions={{ style: { fontSize: 'small' } }} />
                 <Footer />
             </div>
         </Div100vh>
