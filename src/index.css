@@ -95,7 +95,7 @@ input#existing-playlist-url,
   border: 1px solid #5b5b5b;
   box-shadow: none;
   color: inherit;
-  font-size: inherit;
+  font-size: small;
   height: 52px;
   border-radius: 9999px;
   text-overflow: ellipsis;
