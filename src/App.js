@@ -184,9 +184,7 @@ const App = () => {
                 await createPlaylist(userID);
             }
 
-            const sorted = likedSongs.map(batch => batch.reverse()).reverse();
-
-            for (const batch of sorted) {
+            for (const batch of likedSongs) {
                 await addSongs(batch, playlistID);
             }
 
