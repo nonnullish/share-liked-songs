@@ -1,0 +1,29 @@
+.or {
+  width: 100%;
+  position: relative;
+  text-align: center;
+  color: color-mix(in srgb, currentColor 50%, transparent);
+  padding: 16px 0;
+  user-select: none;
+
+  &:before {
+    content: '';
+    width: calc(50% - 2ch);
+    height: 1px;
+    background: currentColor;
+    display: block;
+    position: absolute;
+    top: 50%;
+  }
+
+  &:after {
+    content: '';
+    width: calc(50% - 2ch);
+    height: 1px;
+    background: currentColor;
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 0;
+  }
+}

@@ -1,0 +1,8 @@
+.loader-wrapper {
+  display: flex;
+}
+
+.generate-playlist {
+  display: flex;
+  flex-direction: column;
+}

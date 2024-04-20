@@ -1,0 +1,40 @@
+.form {
+  &:has(.react-select--is-disabled) {
+    cursor: default;
+    opacity: 0.65;
+  }
+
+  color: #ffffff8f;
+
+  &:has(:focus),
+  &:has(.react-select__single-value) {
+    color: #ffffff;
+  }
+
+  label.label {
+    user-select: none;
+    margin-bottom: 0.5lh;
+    display: block;
+  }
+
+  .input {
+    display: flex;
+    flex-direction: row;
+    gap: 1ch;
+    align-items: center;
+    background-color: #121212;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 2px solid transparent;
+
+    &:has(:focus),
+    &:has(.react-select__single-value) {
+      border: 2px solid #f6f6f6;
+    }
+
+    &:has(:focus) {
+      outline: 2px solid #f6f6f6;
+      outline-offset: 2px;
+    }
+  }
+}

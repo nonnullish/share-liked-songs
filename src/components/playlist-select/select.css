@@ -1,0 +1,65 @@
+.playlist-select {
+  button {
+    appearance: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: transparent;
+    color: currentColor;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &[disabled] {
+      cursor: default;
+      opacity: 0.65;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:not([disabled]):hover {
+      scale: 1.05
+    }
+  }
+
+  .react-select__dropdown-indicator {
+    display: none;
+  }
+
+  .react-select-container {
+    position: relative;
+    flex: 1;
+
+    .react-select__control {
+      min-height: unset;
+      gap: 1ch;
+      cursor: text;
+
+      .selected-value {
+        display: flex;
+        flex-direction: column;
+
+        .id {
+          font-size: 0.9em;
+          color: color-mix(in srgb, currentColor 40%, transparent);
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+
+      .react-select__input-container {
+        height: 1.9lh;
+        grid-template-columns: max-content;
+      }
+    }
+  }
+
+  .help {
+    padding-top: 0.5lh;
+    font-size: 0.9em;
+    color: color-mix(in srgb, currentColor 40%, transparent)
+  }
+}

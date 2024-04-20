@@ -1,0 +1,28 @@
+.button {
+  align-items: center;
+  appearance: none;
+  background: #f6f6f6;
+  border-radius: 100px;
+  border: none;
+  color: #222222;
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  justify-content: center;
+  min-height: calc(1.5rem + 2 * 8px);
+  user-select: none;
+
+  &[disabled] {
+    cursor: default;
+    opacity: 0.65;
+  }
+
+  &:focus {
+    outline: 2px solid #f6f6f6;
+    outline-offset: 2px;
+  }
+
+  &:not([disabled]):hover {
+    scale: 1.05
+  }
+}
