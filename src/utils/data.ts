@@ -56,7 +56,7 @@ export const getPlaylistCover = async (playlistID: string) => {
     onError: () => toast.error("Error: Couldn't get the playlist cover"),
   });
 
-  return response.images.at(1).url;
+  return response.images.at(0).url;
 };
 
 export const clearPlaylist = async (playlistID: string) => {
