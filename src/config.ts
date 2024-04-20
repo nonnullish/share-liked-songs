@@ -2,7 +2,7 @@ import { SCOPES } from '@interfaces/users'
 
 export const config = {
   client_id: '05bff6f3b4d4467494c8be1b7895403e',
-  redirect_uri: import.meta.env.VITE_BASE_URL,
+  redirect_uri: "https://nonnullish.github.io/share-liked-songs/",
   scope: [SCOPES.USER_READ_PRIVATE, SCOPES.USER_READ_EMAIL, SCOPES.PLAYLIST_MODIFY_PUBLIC, SCOPES.USER_LIBRARY_READ].join(' ')
 }
 
