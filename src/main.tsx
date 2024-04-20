@@ -9,7 +9,7 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./styles/index.css";
 
 ReactDOM.createRoot(document.querySelector("body")!).render(
-  <BrowserRouter basename={import.meta.env.VITE_BASE_PATH}>
+  <BrowserRouter basename={import.meta.env.URL}>
     <Toaster
       visibleToasts={5}
       className="toaster"
@@ -19,9 +19,10 @@ ReactDOM.createRoot(document.querySelector("body")!).render(
     />
     <main>
       <Routes>
-        <Route path="/authorize" element={<Authorize />} />
+        <Route path="authorize" element={<Authorize />} />
         <Route
           path="/"
+          index
           element={
             <ProtectedRoute>
               <GeneratePlaylist />
@@ -29,14 +30,14 @@ ReactDOM.createRoot(document.querySelector("body")!).render(
           }
         />
         <Route
-          path="/done"
+          path="done"
           element={
             <ProtectedRoute>
               <ViewPlaylist />
             </ProtectedRoute>
           }
         />
-        <Route path="/faq" element={<FAQ />} />
+        <Route path="faq" element={<FAQ />} />
       </Routes>
     </main>
     <Footer />
