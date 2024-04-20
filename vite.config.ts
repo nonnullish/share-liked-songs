@@ -6,7 +6,7 @@ export default ({ mode }: { mode: string }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
   return defineConfig({
-    base: process.env.VITE_BASE_PATH,
+    base: "/share-liked-songs/",
     resolve: {
       alias: {
         "@components": path.resolve(__dirname, "./src/components"),
