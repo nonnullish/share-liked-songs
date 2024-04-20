@@ -1,6 +1,7 @@
 .heart {
   stroke-width: 4px;
   margin: auto;
+  max-width: 100%;
   padding: 10%;
   z-index: -1;
   filter:

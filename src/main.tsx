@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import { Footer } from "@components/footer";
@@ -9,7 +9,7 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./styles/index.css";
 
 ReactDOM.createRoot(document.querySelector("body")!).render(
-  <BrowserRouter basename="/share-liked-songs/">
+  <HashRouter>
     <Toaster
       visibleToasts={5}
       className="toaster"
@@ -41,5 +41,5 @@ ReactDOM.createRoot(document.querySelector("body")!).render(
       </Routes>
     </main>
     <Footer />
-  </BrowserRouter>
+  </HashRouter>
 );
