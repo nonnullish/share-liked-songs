@@ -9,7 +9,7 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import "./styles/index.css";
 
 ReactDOM.createRoot(document.querySelector("body")!).render(
-  <BrowserRouter basename={import.meta.env.URL}>
+  <BrowserRouter basename={import.meta.env.VITE_BASE_PATH}>
     <Toaster
       visibleToasts={5}
       className="toaster"
