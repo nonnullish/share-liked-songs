@@ -53,6 +53,10 @@
       .react-select__input-container {
         height: 1.9lh;
         grid-template-columns: max-content;
+
+        input {
+          z-index: 9999;
+        }
       }
     }
   }
