@@ -14,7 +14,12 @@ export const useAuth = () => {
 
       if (expiryDate && new Date(expiryDate) < new Date()) {
         const token = await refreshToken();
-        currentToken.save(token);
+
+        if (token) {
+          currentToken.save(token);
+        } else {
+          currentToken.clear();
+        }
       }
 
       const { access_token } = currentToken;

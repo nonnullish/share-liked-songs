@@ -24,12 +24,22 @@ export const currentToken = {
     const { access_token, refresh_token, expires_in } = response;
 
     localStorage.setItem("access_token", access_token);
-    localStorage.setItem("refresh_token", refresh_token);
     localStorage.setItem("expires_in", expires_in);
+
+    if (refresh_token) {
+      localStorage.setItem("refresh_token", refresh_token);
+    }
 
     const now = new Date();
     const expires = new Date(now.getTime() + (expires_in * 1000)).toISOString();
     localStorage.setItem('expires', expires);
+  },
+
+  clear: () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("expires_in");
+    localStorage.removeItem("expires");
   },
 };
 
